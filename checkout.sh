@@ -27,8 +27,6 @@ rm -rf ${testDir}
 mkdir -p ${logDir}
 ## clone code
 cd ${testDir}
-#git clone --recursive https://github.com/NOAA-GFDL/SHiELD_build.git && cd SHiELD_build && ./CHECKOUT_code
-#git clone --recursive -b parallelworks https://github.com/laurenchilutti/SHiELD_build.git && cd SHiELD_build && ./CHECKOUT_code
-git clone --recursive -b pwsbatch https://github.com/laurenchilutti/SHiELD_build.git && cd SHiELD_build && ./CHECKOUT_code
+git clone --recursive https://github.com/NOAA-GFDL/SHiELD_build.git && cd SHiELD_build && ./CHECKOUT_code
 ## Check out the PR
 cd ${testDir}/SHiELD_SRC/GFDL_atmos_cubed_sphere && git fetch origin ${branch}:toMerge && git merge toMerge
