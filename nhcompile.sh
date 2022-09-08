@@ -24,6 +24,8 @@ testDir=${dirRoot}/${intelVersion}/${branch}
 logDir=${testDir}/log
 # Set up build
 cd ${testDir}/SHiELD_build/Build
+#Define External Libs path
+export EXTERNAL_LIBS=${dirRoot}/externallibs
 # Build SHiELD
 set -o pipefail
 singularity exec -B /contrib ${container} ${container_env_script} "./COMPILE solo nh 64bit repro intel clean"
