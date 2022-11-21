@@ -21,6 +21,7 @@ if [ -z "$1" ]
 fi
 testDir=${dirRoot}/${intelVersion}/${branch}
 logDir=${testDir}/log
+mkdir -p ${logDir}
 baselineDir=${dirRoot}/baselines/intel/${intelVersion}
 ## Run the CI Test
 # Define the builddir testscriptdir and rundir BUILDDIR is used by test scripts 
@@ -34,7 +35,7 @@ set -o pipefail
 # Define the test
 test=d96_1k.solo.mtn_schar.mono
 # Execute the test piping output to log file
-./${test} " --mpi=pmi2 singularity exec -B /contrib ${container} ${container_env_script}" |& tee ${logDir}/run_${test}.log
+./${test} " --mpi=pmi2 --nodes=1" |& tee ${logDir}/run_${test}.log
 ## Compare Restarts to Baseline
 for resFile in `ls ${baselineDir}/${test}`
 do

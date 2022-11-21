@@ -7,10 +7,6 @@ dirRoot=/contrib/fv3
 ## Intel version to be used
 intelVersion=2022.1.1
 ##############################################################################
-## HPC-ME container
-container=/contrib/containers/HPC-ME_base-ubuntu20.04-intel${intelVersion}.sif 
-container_env_script=/contrib/containers/load_spack_HPC-ME.sh
-##############################################################################
 ## Set up the directories
 if [ -z "$1" ]
   then
@@ -22,10 +18,11 @@ if [ -z "$1" ]
 fi
 testDir=${dirRoot}/${intelVersion}/${branch}
 logDir=${testDir}/log
+mkdir -p ${logDir}
 # Set up build
 cd ${testDir}/SHiELD_build/Build
 #Define External Libs path
-export EXTERNAL_LIBS=${dirRoot}/externallibs
+export EXTERNAL_LIBS=${dirRoot}/externallibs-nocontainer
 # Build SHiELD
 set -o pipefail
-singularity exec -B /contrib ${container} ${container_env_script} "./COMPILE solo hydro 64bit repro intel clean"
+./COMPILE solo hydro 64bit repro intel clean |& tee ${logDir}/compile_hydro.log
