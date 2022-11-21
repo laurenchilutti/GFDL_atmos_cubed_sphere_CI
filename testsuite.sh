@@ -6,7 +6,6 @@ dirRoot=/contrib/fv3
 ## Intel version to be used
 intelVersion=2022.1.1
 ##############################################################################
-## HPC-ME container
 ## Set up the directories
 if [ -z "$1" ]
   then
