@@ -1,0 +1,72 @@
+#!/bin/bash -xe
+
+##############################################################################
+## User set up variables
+## Root directory for CI
+dirRoot=/contrib/fv3
+## Intel version to be used
+intelVersion=2022.1.1
+##############################################################################
+## HPC-ME container
+container=/contrib/containers/HPC-ME_base-ubuntu20.04-intel${intelVersion}.sif 
+container_env_script=/contrib/containers/load_spack_HPC-ME.sh
+##############################################################################
+## Set up the directories
+branch=""
+buildFMS=""
+while getopts ":b:f:" option; do
+  case "${option}" in
+    b)
+      #GFDL_atmos_cubed_sphere branch to test
+      branch=${OPTARG};;
+    f)
+      #FMS tag to checkout and build
+      buildFMS=${OPTARG};;
+    *)
+      echo "Error: Invalid parameter specified"
+      exit;;
+  esac
+done
+
+if [ -z "${branch}" ]
+  then
+    echo "No branch supplied; using main"
+    branch="main"
+  else
+    echo Branch is ${branch}
+fi
+
+if [ -z "${buildFMS}" ]
+  then
+    versionFMS="2022.04"
+    echo "using pre-built FMS at version " ${versionFMS}
+  else
+    echo "Will rebuild FMS with tag " ${buildFMS}
+fi
+
+testDir=${dirRoot}/${intelVersion}/${branch}
+logDir=${testDir}/log
+## create directories
+rm -rf ${testDir}
+mkdir -p ${logDir}
+## clone code
+cd ${testDir}
+git clone --recursive https://github.com/NOAA-GFDL/SHiELD_build.git && cd SHiELD_build 
+export SHiELD_SRC=${testDir}/SHiELD_SRC/
+mkdir -p ${SHiELD_SRC} && cd ${SHiELD_SRC}
+git clone -b main https://github.com/NOAA-GFDL/GFDL_atmos_cubed_sphere
+git clone -b main https://github.com/NOAA-GFDL/SHiELD_physics
+git clone -b ${versionFMS} https://github.com/NOAA-GFDL/FMSCoupler
+git clone -b ${drivers_release} https://github.com/NOAA-GFDL/atmos_drivers
+## Check out the PR
+cd ${SHiELD_SRC}/GFDL_atmos_cubed_sphere && git fetch origin ${branch}:toMerge && git merge toMerge
+
+if [ -z "${buildFMS}" ]
+  then
+    echo "not cloning FMS"
+  else
+    git clone -b ${versionFMS} https://github.com/NOAA-GFDL/FMS
+    export EXTERNAL_LIBS=
+fi
+
+export EXTERNAL_LIBS=export EXTERNAL_LIBS=

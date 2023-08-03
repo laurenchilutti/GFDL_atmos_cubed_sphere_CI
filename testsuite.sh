@@ -33,11 +33,15 @@ set -o pipefail
 # Define the test
 for test in `ls ${baselineDir}`
 do
-  # Execute the test piping output to log file
-  ./${test} " --mpi=pmi2 singularity exec -B /contrib ${container} ${container_env_script}" |& tee ${logDir}/run_${test}.log
+  scancel -n ${branch}${test}
+# Execute the test piping output to log file
+  ./${test} " --mpi=pmi2 --exclusive singularity exec -B /contrib ${container} ${container_env_script}" |& tee ${logDir}/run_${test}.log
   ## Compare Restarts to Baseline
-  for resFile in `ls ${baselineDir}/${test}`
+. ${MODULESHOME}/init/sh
+  module load intel/2022.1.2
+module load nccmp
+for resFile in `ls ${baselineDir}/${test}`
   do
-    diff ${baselineDir}/${test}/${resFile} ${runDir}/${test}/RESTART/${resFile}
+    nccmp -df ${baselineDir}/${test}/${resFile} ${runDir}/${test}/RESTART/${resFile}
   done
 done

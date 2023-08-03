@@ -33,10 +33,6 @@ cd ${testscriptDir}
 set -o pipefail
 # Define the test
 test=C96.solo.BCmoist.nhK
+scancel -n ${branch}${test}
 # Execute the test piping output to log file
-./${test} " --mpi=pmi2 singularity exec -B /contrib ${container} ${container_env_script}" |& tee ${logDir}/run_${test}.log
-## Compare Restarts to Baseline
-for resFile in `ls ${baselineDir}/${test}`
-do
-  diff ${baselineDir}/${test}/${resFile} ${runDir}/${test}/RESTART/${resFile}
-done
+./${test} " --mpi=pmi2 --exclusive singularity exec -B /contrib ${container} ${container_env_script}" |& tee ${logDir}/run_${test}.log

@@ -14,18 +14,24 @@ container_env_script=/contrib/containers/load_spack_noaa-intel.sh
 ## Set up the directories
 if [ -z "$1" ]
   then
-    echo "No branch supplied; using main"
-    branch=main
+    echo "Error: No FMS tag supplied, please rerun and provide a tag to use for FMS"
+    exit 1
   else
-    echo Branch is ${1}
-    branch=${1}
+    echo FMS tag is ${1}
+    FMStag=${1}
 fi
-testDir=${dirRoot}/${intelVersion}/${branch}
+
+testDir=${dirRoot}/${intelVersion}/${FMStag}
 logDir=${testDir}/log
-# Set up build
-cd ${testDir}/SHiELD_build/Build
-#Define External Libs path
-export EXTERNAL_LIBS=${dirRoot}/externallibs
-# Build SHiELD
-set -o pipefail
-singularity exec -B /contrib ${container} ${container_env_script} "./COMPILE solo nh 64bit repro intel clean"
+export MODULESHOME=/usr/share/lmod/lmod
+## create directories
+rm -rf ${testDir}
+mkdir -p ${logDir}
+
+## clone code
+cd ${testDir}
+git clone --recursive https://github.com/NOAA-GFDL/SHiELD_build.git
+
+## Check out the FMS tag
+mkdir -p ${testDir}/SHiELD_SRC
+cd ${testDir}/SHiELD_SRC/ && git clone -b ${FMStag} https://github.com/NOAA-GFDL/FMS.git
