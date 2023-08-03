@@ -1,4 +1,4 @@
-#!/bin/sh -xe
+#!/bin/bash -xe
 ulimit -s unlimited
 ##############################################################################
 ## User set up veriables
@@ -19,6 +19,7 @@ if [ -z "$1" ]
     echo Branch is ${1}
     branch=${1}
 fi
+MODULESHOME=/usr/share/lmod/lmod
 testDir=${dirRoot}/${intelVersion}/${branch}
 logDir=${testDir}/log
 baselineDir=${dirRoot}/baselines/intel/${intelVersion}
@@ -28,6 +29,10 @@ baselineDir=${dirRoot}/baselines/intel/${intelVersion}
 export BUILDDIR="${testDir}/SHiELD_build"
 testscriptDir=${BUILDDIR}/RTS/CI
 runDir=${BUILDDIR}/CI/BATCH-CI
+
+#Add path to yaml tools
+export PATH="/contrib/fv3/yamltools/bin:$PATH"
+
 # Run CI test scripts
 cd ${testscriptDir}
 set -o pipefail
@@ -35,8 +40,14 @@ set -o pipefail
 test=C128r20.solo.superC
 # Execute the test piping output to log file
 ./${test} " --mpi=pmi2 singularity exec -B /contrib ${container} ${container_env_script}" |& tee ${logDir}/run_${test}.log
+
 ## Compare Restarts to Baseline
+source $MODULESHOME/init/sh
+export MODULEPATH=/mnt/shared/manual_modules:/usr/share/modulefiles/Linux:/usr/share/modulefiles/Core:/usr/share/lmod/lmod/modulefiles/Core:/apps/modules/modulefiles:/apps/modules/modulefamilies/intel
+module load intel/2022.1.2
+module load netcdf
+module load nccmp
 for resFile in `ls ${baselineDir}/${test}`
 do
-  diff ${baselineDir}/${test}/${resFile} ${runDir}/${test}/RESTART/${resFile}
+  nccmp -d ${baselineDir}/${test}/${resFile} ${runDir}/${test}/RESTART/${resFile}
 done
