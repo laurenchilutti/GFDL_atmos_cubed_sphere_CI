@@ -1,15 +1,16 @@
-#!/bin/sh -xe
+#!/bin/bash -xe
 ulimit -s unlimited
 ##############################################################################
 ## User set up veriables
 ## Root directory for CI
 dirRoot=/contrib/fv3
 ## Intel version to be used
-intelVersion=2022.1.1
+intelVersion=2023.2.0
 ##############################################################################
-## HPC-ME container
-container=/contrib/containers/HPC-ME_base-ubuntu20.04-intel${intelVersion}.sif 
-container_env_script=/contrib/containers/load_spack_HPC-ME.sh
+## container
+container=/contrib/containers/noaa-intel-prototype_2023.08.02.sif
+container_env_script=/contrib/containers/load_spack_noaa-intel.sh
+##############################################################################
 ## Set up the directories
 if [ -z "$1" ]
   then
@@ -19,6 +20,7 @@ if [ -z "$1" ]
     echo Branch is ${1}
     branch=${1}
 fi
+MODULESHOME=/usr/share/lmod/lmod
 testDir=${dirRoot}/${intelVersion}/${branch}
 logDir=${testDir}/log
 baselineDir=${dirRoot}/baselines/intel/${intelVersion}
@@ -28,11 +30,16 @@ baselineDir=${dirRoot}/baselines/intel/${intelVersion}
 export BUILDDIR="${testDir}/SHiELD_build"
 testscriptDir=${BUILDDIR}/RTS/CI
 runDir=${BUILDDIR}/CI/BATCH-CI
+
+#Add path to yaml tools
+export PATH="/contrib/fv3/yamltools/bin:$PATH"
+
 # Run CI test scripts
 cd ${testscriptDir}
 set -o pipefail
 # Define the test
 test=d96_2k.solo.bubble.nhK
-scancel -n ${branch}${test}
 # Execute the test piping output to log file
-./${test} " --mpi=pmi2 --exclusive singularity exec -B /contrib ${container} ${container_env_script}" |& tee ${logDir}/run_${test}.log
+./${test} " --mpi=pmi2 singularity exec -B /contrib ${container} ${container_env_script}" |& tee ${logDir}/run_${test}.log
+
+## Answers are not expected to reproduce for this test

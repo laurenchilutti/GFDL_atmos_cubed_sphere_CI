@@ -4,7 +4,7 @@ ulimit -s unlimited
 ## Root directory for CI
 dirRoot=/contrib/fv3
 ## Intel version to be used
-intelVersion=2022.1.1
+intelVersion=2023.2.0
 ##############################################################################
 ## Set up the directories
 if [ -z "$1" ]

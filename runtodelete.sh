@@ -1,6 +1,6 @@
 #!/bin/sh -xe
 dirRoot=/contrib/fv3
-intelVersion=2022.1.1
+intelVersion=2023.2.0
 baselineDir=${dirRoot}/baselines/intel/${intelVersion}
 # Run CI test scripts
 cd ${dirRoot}/FV3CIScripts

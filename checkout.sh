@@ -8,7 +8,7 @@ dirRoot=/contrib/fv3
 intelVersion=2023.2.0
 ##############################################################################
 ## container
-container=/contrib/containers/noaa-intel-prototype_2023.08.02.sif 
+container=/contrib/containers/noaa-intel-prototype_2023.08.02.sif
 container_env_script=/contrib/containers/load_spack_noaa-intel.sh
 ##############################################################################
 ## Set up the directories
