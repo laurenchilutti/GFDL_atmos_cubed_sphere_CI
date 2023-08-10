@@ -30,9 +30,6 @@ export BUILDDIR="${testDir}/SHiELD_build"
 testscriptDir=${BUILDDIR}/RTS/CI
 runDir=${BUILDDIR}/CI/BATCH-CI
 
-#Add path to yaml tools
-export PATH="/contrib/fv3/yamltools/bin:$PATH"
-
 # Run CI test scripts
 cd ${testscriptDir}
 set -o pipefail
