@@ -5,11 +5,11 @@
 ## Root directory for CI
 dirRoot=/contrib/fv3
 ## Intel version to be used
-intelVersion=2022.1.1
+intelVersion=2023.2.0
 ##############################################################################
 ## HPC-ME container
-container=/contrib/containers/HPC-ME_base-ubuntu20.04-intel${intelVersion}.sif 
-container_env_script=/contrib/containers/load_spack_HPC-ME.sh
+container=/contrib/containers/noaa-intel-prototype_2023.09.25.sif
+container_env_script=/contrib/containers/load_spack_noaa-intel.sh
 ##############################################################################
 ## Set up the directories
 if [ -z "$1" ]
@@ -27,41 +27,12 @@ export MODULESHOME=/usr/share/lmod/lmod
 rm -rf ${testDir}
 mkdir -p ${logDir}
 # salloc commands to start up 
-#salloc --exclusive -N 4 -J ${branch}C512r20.solo.superC sleep 30m &
-#salloc --exclusive -N 4 -J ${branch}C768.sw.BTwave sleep 30m &
-#salloc --exclusive -N 2 -J ${branch}C256r20.solo.superC sleep 30m &
-#salloc --exclusive -N 2 -J ${branch}C384.sw.BLvortex sleep 30m &
-#salloc --exclusive -N 1 -J ${branch}C128r20.solo.superC sleep 30m &
-#salloc --exclusive -N 1 -J ${branch}C128r3.solo.TC sleep 30m &
-#salloc --exclusive -N 1 -J ${branch}C128r3.solo.TC.d1 sleep 30m &
-#salloc --exclusive -N 1 -J ${branch}C128r3.solo.TC.h6 sleep 30m &
-#salloc --exclusive -N 1 -J ${branch}C128r3.solo.TC.tr8 sleep 30m &3salloc --exclusive -N 1 -J ${branch}C96.solo.BCdry sleep 30m &
-#salloc --exclusive -N 1 -J ${branch}C96.solo.BCdry sleep 30m &
-#salloc --exclusive -N 1 -J ${branch}C96.solo.BCmoist sleep 30m &
-#salloc --exclusive -N 1 -J ${branch}C96.solo.BCmoist.nhK sleep 30m &
-#salloc --exclusive -N 1 -J ${branch}C96.solo.mtn_rest sleep 30m &
-#salloc --exclusive -N 1 -J ${branch}C96.solo.mtn_rest.nonmono.nccmp -df2 sleep 30m &
-#salloc --exclusive -N 1 -J ${branch}d96_1k.solo.mtn_rest_shear sleep 30m &
-#salloc --exclusive -N 1 -J ${branch}d96_1k.solo.mtn_rest_shear.olddamp sleep 30m &
-#salloc --exclusive -N 1 -J ${branch}d96_1k.solo.mtn_schar sleep 30m &
-#salloc --exclusive -N 1 -J ${branch}d96_1k.solo.mtn_schar.mono sleep 30m &
-#salloc --exclusive -N 1 -J ${branch}d96_2k.solo.bubble sleep 30m &
-#salloc --exclusive -N 1 -J ${branch}d96_2k.solo.bubble.n0 sleep 30m &
-#salloc --exclusive -N 1 -J ${branch}d96_2k.solo.bubble.nhK sleep 30m &
-#salloc --exclusive -N 1 -J ${branch}d96_500m.solo.mtn_schar sleep 30m &
-#salloc --exclusive -N 1 -J ${branch}C192.sw.BLvortex sleep 30m &
-#salloc --exclusive -N 1 -J ${branch}C192.sw.BTwave sleep 30m &
-#salloc --exclusive -N 1 -J ${branch}C192.sw.modon sleep 30m &
-#salloc --exclusive -N 1 -J ${branch}C384.sw.BTwave sleep 30m &
-#salloc --exclusive -N 1 -J ${branch}C96.sw.BLvortex sleep 30m &
-#salloc --exclusive -N 1 -J ${branch}C96.sw.BTwave sleep 30m &
-#salloc --exclusive -N 1 -J ${branch}C96.sw.RHwave sleep 30m &
-#salloc --exclusive -N 1 -J ${branch}C96.sw.modon sleep 30m &
-#salloc --exclusive -N 1 -J ${branch}C96.solo.BCdry.hyd sleep 30m &
-#salloc --exclusive -N 1 -J ${branch}C96.solo.BCmoist.hyd sleep 30m &
-#salloc --exclusive -N 1 -J ${branch}C96.solo.BCmoist.hyd.d3 sleep 30m &
-#salloc --exclusive -N 1 -J ${branch}C96.solo.mtn_rest.hyd sleep 30m &
-#salloc --exclusive -N 1 -J ${branch}C96.solo.mtn_rest.hyd.nccmp -df2 sleep 30m &
+#2 tests layout 8,8 (16 nodes)
+#2 tests layout 4,8 (8 nodes)
+#9 tests layout 4,4 (18 nodes)
+#5 tests layout 4,1 (5 nodes)
+#17 tests layout 2,2 (17 nodes)
+#salloc --partition=p2 -N 64 -J ${branch} sleep 20m &
 
 ## clone code
 cd ${testDir}

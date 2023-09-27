@@ -5,11 +5,11 @@
 ## Root directory for CI
 dirRoot=/contrib/fv3
 ## Intel version to be used
-intelVersion=2022.1.1
+intelVersion=2023.2.0
 ##############################################################################
 ## HPC-ME container
-container=/contrib/containers/HPC-ME_base-ubuntu20.04-intel${intelVersion}.sif 
-container_env_script=/contrib/containers/load_spack_HPC-ME.sh
+container=/contrib/containers/noaa-intel-prototype_2023.09.25.sif
+container_env_script=/contrib/containers/load_spack_noaa-intel.sh
 ##############################################################################
 ## Set up the directories
 if [ -z "$1" ]

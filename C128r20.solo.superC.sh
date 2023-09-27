@@ -5,11 +5,11 @@ ulimit -s unlimited
 ## Root directory for CI
 dirRoot=/contrib/fv3
 ## Intel version to be used
-intelVersion=2022.1.1
+intelVersion=2023.2.0
 ##############################################################################
 ## HPC-ME container
-container=/contrib/containers/HPC-ME_base-ubuntu20.04-intel${intelVersion}.sif 
-container_env_script=/contrib/containers/load_spack_HPC-ME.sh
+container=/contrib/containers/noaa-intel-prototype_2023.09.25.sif
+container_env_script=/contrib/containers/load_spack_noaa-intel.sh
 ## Set up the directories
 if [ -z "$1" ]
   then
@@ -22,7 +22,7 @@ fi
 MODULESHOME=/usr/share/lmod/lmod
 testDir=${dirRoot}/${intelVersion}/${branch}
 logDir=${testDir}/log
-baselineDir=${dirRoot}/baselines/intel/${intelVersion}
+baselineDir=${dirRoot}/intelbaselines/intel/${intelVersion}
 ## Run the CI Test
 # Define the builddir testscriptdir and rundir BUILDDIR is used by test scripts 
 # Set the BUILDDIR for the test script to use
@@ -36,7 +36,7 @@ set -o pipefail
 # Define the test
 test=C128r20.solo.superC
 # Execute the test piping output to log file
-./${test} " --mpi=pmi2 singularity exec -B /contrib ${container} ${container_env_script}" |& tee ${logDir}/run_${test}.log
+./${test} " --partition=p2 --mpi=pmi2 --job-name=${test} singularity exec -B /contrib ${container} ${container_env_script}" |& tee ${logDir}/run_${test}.log
 
 ## Compare Restarts to Baseline
 source $MODULESHOME/init/sh
