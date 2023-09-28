@@ -20,15 +20,20 @@ if [ -z "$1" ]
     echo FMS tag is ${1}
     FMStag=${1}
 fi
-if [ ! -z "$2" ]
+if [ -z "$2" ]
   then
+    echo "no FMScoupler tag specified, using what is in SHiELD_build/CHECKOUT_code"
+  else
     echo FMSCoupler tag is ${2}
     FMSCtag=${2}
 fi
-if [ ! -z "$3" ]
+if [ -z "$3" ]
   then
+    echo "no atmos_drivers tag specified, using what is in SHiELD_build/CHECKOUT_code"
+  else
     echo atmos_drivers tag is ${3}
     ADtag=${3}
+fi
 
 testDir=${dirRoot}/${intelVersion}/${FMStag}
 ## create directories
@@ -37,12 +42,11 @@ mkdir -p ${testDir}
 
 ## clone code
 cd ${testDir}
-git clone --recursive https://github.com/NOAA-GFDL/SHiELD_build.git
+git clone --recursive https://github.com/NOAA-GFDL/SHiELD_build.git && cd SHiELD_build && ./CHECKOUT_code
+
 
 ## Check out the FMS tag
 mkdir -p ${testDir}/SHiELD_SRC
-cd ${testDir}/SHiELD_SRC/ && git clone -b ${FMStag} https://github.com/NOAA-GFDL/FMS.git
-cd ${testDir}/SHiELD_SRC/ && git clone -b ${FMSCtag} https://github.com/NOAA-GFDL/FMSCoupler
-cd ${testDir}/SHiELD_SRC/ && git clone -b ${ADtag} https://github.com/NOAA-GFDL/atmos_drivers
-cd ${testDir}/SHiELD_SRC/ && git clone -b main https://github.com/NOAA-GFDL/GFDL_atmos_cubed_sphere
-cd ${testDir}/SHiELD_SRC/ && git clone -b main https://github.com/NOAA-GFDL/SHiELD_physics
+cd ${testDir}/SHiELD_SRC/FMS && git checkout origin/${FMStag}
+cd ${testDir}/SHiELD_SRC/FMSCoupler && git checkout origin/${FMSCtag}
+cd ${testDir}/SHiELD_SRC/atmos_drivers && git checkout origin/${ADtag}
