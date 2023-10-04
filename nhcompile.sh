@@ -20,7 +20,7 @@ if [ -z "$1" ]
     echo Branch is ${1}
     branch=${1}
 fi
-testDir=${dirRoot}/${intelVersion}/${branch}
+testDir=${dirRoot}/${intelVersion}/GFDL_atmos_cubed_sphere/${branch}
 logDir=${testDir}/log
 # Set up build
 cd ${testDir}/SHiELD_build/Build

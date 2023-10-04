@@ -20,9 +20,9 @@ if [ -z "$1" ]
     branch=${1}
 fi
 MODULESHOME=/usr/share/lmod/lmod
-testDir=${dirRoot}/${intelVersion}/${branch}
+testDir=${dirRoot}/${intelVersion}/GFDL_atmos_cubed_sphere/${branch}
 logDir=${testDir}/log
-baselineDir=${dirRoot}/intelbaselines/intel/${intelVersion}
+baselineDir=${dirRoot}/baselines/intel/${intelVersion}
 ## Run the CI Test
 # Define the builddir testscriptdir and rundir BUILDDIR is used by test scripts 
 # Set the BUILDDIR for the test script to use
