@@ -1,4 +1,4 @@
-#!/bin/sh -xe
+#!/bin/bash -xe
 ulimit -s unlimited
 ##############################################################################
 ## User set up veriables
@@ -19,8 +19,16 @@ if [ -z "$1" ]
     echo Branch is ${1}
     branch=${1}
 fi
+if [ -z "$2" ]
+  then
+    echo "No second argument"
+    commit=none
+  else
+    echo Commit is ${2}
+    commit=${2}
+fi
 MODULESHOME=/usr/share/lmod/lmod
-testDir=${dirRoot}/${intelVersion}/GFDL_atmos_cubed_sphere/${branch}
+testDir=${dirRoot}/${intelVersion}/GFDL_atmos_cubed_sphere/${branch}/${commit}
 logDir=${testDir}/log
 baselineDir=${dirRoot}/baselines/intel/${intelVersion}
 ## Run the CI Test
@@ -36,6 +44,15 @@ set -o pipefail
 # Define the test
 test=d96_2k.solo.bubble.nhK
 # Execute the test piping output to log file
-./${test} " --partition=p2 --mpi=pmi2 --job-name=${test} singularity exec -B /contrib ${container} ${container_env_script}" |& tee ${logDir}/run_${test}.log
+./${test} " --partition=p2 --mpi=pmi2 --job-name=${commit}_${test} singularity exec -B /contrib ${container} ${container_env_script}" |& tee ${logDir}/run_${test}.log
 
-#test not expected to reproduce
+## Compare Restarts to Baseline
+source $MODULESHOME/init/sh
+export MODULEPATH=/mnt/shared/manual_modules:/usr/share/modulefiles/Linux:/usr/share/modulefiles/Core:/usr/share/lmod/lmod/modulefiles/Core:/apps/modules/modulefiles:/apps/modules/modulefamilies/intel
+module load intel/2022.1.2
+module load netcdf
+module load nccmp
+for resFile in `ls ${baselineDir}/${test}`
+do
+  nccmp -d ${baselineDir}/${test}/${resFile} ${runDir}/${test}/RESTART/${resFile}
+done
