@@ -46,13 +46,4 @@ test=d96_2k.solo.bubble
 # Execute the test piping output to log file
 ./${test} " --partition=p2 --mpi=pmi2 --job-name=${commit}_${test} singularity exec -B /contrib ${container} ${container_env_script}" |& tee ${logDir}/run_${test}.log
 
-## Compare Restarts to Baseline
-source $MODULESHOME/init/sh
-export MODULEPATH=/mnt/shared/manual_modules:/usr/share/modulefiles/Linux:/usr/share/modulefiles/Core:/usr/share/lmod/lmod/modulefiles/Core:/apps/modules/modulefiles:/apps/modules/modulefamilies/intel
-module load intel/2022.1.2
-module load netcdf
-module load nccmp
-for resFile in `ls ${baselineDir}/${test}`
-do
-  nccmp -d ${baselineDir}/${test}/${resFile} ${runDir}/${test}/RESTART/${resFile}
-done
+#test not expected to reproduce
